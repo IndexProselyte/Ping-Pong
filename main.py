@@ -46,6 +46,9 @@ FILE_MUS_Background = "track1.mp3"
 FILE_SFX_Stroke = "stroke.wav"
 FILE_SFX_Lost = "lost.wav"
 
+# stores both players score
+SCORE_PLAYER1 = 0
+SCORE_PLAYER2 = 0
 
 #######################################################
 # Utility
@@ -65,6 +68,8 @@ def LoadSound(fileName):
 
 # draw a given text of given size to given surface on given position
 def DrawText(surface, text, size, x, y):
+    global SCORE_PLAYER1
+    global SCORE_PLAYER2
     font_name = pg.font.match_font("arial")
     font = pg.font.Font(font_name, size)
     text_surface = font.render(text, True, pg.Color('white'))
@@ -228,7 +233,9 @@ class Ball(pg.sprite.Sprite):
         if yold == ynew:
             self.speedy *= -1
 
-    def update(self):        
+    def update(self):   
+        global SCORE_PLAYER2
+        global SCORE_PLAYER1     
         self.rect.x += self.speedx
         self.rect.y += self.speedy
 
@@ -236,11 +243,11 @@ class Ball(pg.sprite.Sprite):
         # change direction to random opposit
         if self.rect.right > SCREEN_WIDTH:
             self.speedx *= -1
-            
+            SCORE_PLAYER1 += 1
 
         if self.rect.left < 0:
             self.speedx *= -1
-            
+            SCORE_PLAYER2 += 1
         if self.rect.top < 0:
             self.speedy *= -1
                
@@ -334,10 +341,6 @@ player_sprites.add(player2)
 ball = Ball(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 10)
 all_sprites.add(ball)
 
-# stores both players score
-score_player1 = 0
-score_player2 = 0
-
 running = True
 while running:
     # loop through all events
@@ -401,8 +404,8 @@ while running:
 
     # draw / render the sceen
     all_sprites.draw(screen)
-    DrawText(screen, str(score_player1), 30, SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 3)
-    DrawText(screen, str(score_player2), 30, SCREEN_WIDTH / 2 + 50, SCREEN_HEIGHT / 3)
+    DrawText(screen, str(SCORE_PLAYER1), 30, SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 3)
+    DrawText(screen, str(SCORE_PLAYER2), 30, SCREEN_WIDTH / 2 + 50, SCREEN_HEIGHT / 3)
 
     # *after* drawing everything, flip/update the screen with what we've drawn
     pg.display.flip()
